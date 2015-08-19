@@ -9,7 +9,7 @@ the [Groove Basin Protocol Specification](https://github.com/andrewrk/groovebasi
 ## Command Line Interface
 
 ```
-Usage: node /home/andy/dev/gbremote/cli.js command [args]
+Usage: gbremote command [args]
 Options With Defaults:
   --server http://127.0.0.1:16242/
 Commands:
