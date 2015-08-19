@@ -187,7 +187,7 @@ function showStatus(arg0, flags, args) {
     gbr.sendMessage('subscribe', {name: 'currentTrack'});
   });
   gbr.on('message', function(name, args) {
-    if (name === 'queue') {
+    if (name === 'time') {
       serverTimeOffset = new Date(args) - new Date();
     } else if (name === 'libraryQueue') {
       library = args;
