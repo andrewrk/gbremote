@@ -180,14 +180,16 @@ function seekDir(arg0, flags, args, dir) {
 function showStatus(arg0, flags, args) {
   noargs(arg0, args);
   var gbr = createClient(flags);
-  var library, queue, currentTrack;
+  var library, queue, currentTrack, serverTimeOffset;
   gbr.on('connect', function() {
     gbr.sendMessage('subscribe', {name: 'libraryQueue'});
     gbr.sendMessage('subscribe', {name: 'queue'});
     gbr.sendMessage('subscribe', {name: 'currentTrack'});
   });
   gbr.on('message', function(name, args) {
-    if (name === 'libraryQueue') {
+    if (name === 'queue') {
+      serverTimeOffset = new Date(args) - new Date();
+    } else if (name === 'libraryQueue') {
       library = args;
     } else if (name === 'queue') {
       queue = args;
@@ -203,7 +205,7 @@ function showStatus(arg0, flags, args) {
       var queueItem = queue[currentTrack.currentItemId];
       var libraryItem = library[queueItem.key];
       if (currentTrack.isPlaying) {
-        var trackStartDate = new Date(new Date(currentTrack.trackStartDate) - gbr.serverTimeOffset);
+        var trackStartDate = new Date(new Date(currentTrack.trackStartDate) - serverTimeOffset);
         var pos = (new Date() - trackStartDate) / 1000;
         console.log("Playing: " + formatTime(pos) + " / " + formatTime(libraryItem.duration));
       } else {
@@ -223,6 +225,8 @@ function stream(arg0, flags, args) {
   var streamEndpoint;
   gbr.on('connect', function() {
     gbr.sendMessage('subscribe', {name: 'streamEndpoint'});
+    gbr.sendMessage('setStreaming', true);
+    gbr.sendMessage('play');
   });
   gbr.on('message', function(name, args) {
     if (name === 'streamEndpoint') {

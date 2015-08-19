@@ -22,8 +22,6 @@ function GrooveBasinRemote(options) {
   this.hostname = options.hostname || "127.0.0.1";
   this.port = options.port || 16242;
 
-  this.serverTime = null;
-  this.serverTimeOffset = null;
   this.token = null;
 }
 
@@ -40,9 +38,6 @@ GrooveBasinRemote.prototype.connect = function(cb) {
   self.ws = yawl.createClient(wsOptions);
   self.ws.on('error', function(err) {
     self.emit('error', err);
-  });
-  self.ws.on('open', function() {
-    self.emit('connect');
   });
   self.ws.on('textMessage', function(message) {
     var parsed;
@@ -77,13 +72,17 @@ GrooveBasinRemote.prototype.sendMessage = function(name, args) {
 };
 
 GrooveBasinRemote.prototype.httpRequest = function(options, cb) {
+  var headers = extend({
+    'Cookie': 'token=' + this.token,
+  }, options.headers || {});
   var reqOptions = extend({ 
     protocol: this.httpProtocol,
     hostname: this.hostname,
     port: this.port,
+    headers: headers,
   }, options);
-  var mod = this.isSecure ? https : http;
-  return mod.request(reqOptions, cb);
+  var httpModule = this.isSecure ? https : http;
+  return httpModule.request(reqOptions, cb);
 };
 
 function isProtocolSecure(protocol) {
@@ -91,15 +90,12 @@ function isProtocolSecure(protocol) {
 }
 
 function handleMessage(self, name, args) {
-  if (name === 'time') {
-    self.serverTime = new Date(args);
-    self.serverTimeOffset = new Date(args) - new Date();
-  } else if (name === 'token') {
+  if (name === 'token') {
+    if (self.token) {
+      self.emit('error', new Error("received token twice"));
+    }
     self.token = args;
-  } else if (name === 'user') {
-    self.user = args;
-  } else if (name === 'lastFmApiKey') {
-    self.lastFmApiKey = args;
+    self.emit('connect');
   } else {
     self.emit('message', name, args);
   }

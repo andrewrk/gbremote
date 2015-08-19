@@ -53,13 +53,15 @@ Creates a `GrooveBasinRemote` instance.
 
 ### gbremote.GrooveBasinRemote
 
-#### gbr.connect
+#### gbr.connect()
 
-#### gbr.close
+#### gbr.close()
 
 #### gbr.sendMessage(name, args)
 
-#### gbr.httpRequest
+#### gbr.httpRequest()
+
+#### gbr.token
 
 #### Event: 'error'
 
