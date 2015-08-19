@@ -1,0 +1,14 @@
+{
+  "name": "gbremote",
+  "version": "0.0.0",
+  "description": "Groove Basin command-line remote control",
+  "main": "index.js",
+  "bin": {
+    "gbremote": "./cli.js"
+  },
+  "author": "Andrew Kelley <superjoe30@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "yawl": "~1.0.2"
+  }
+}
