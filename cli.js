@@ -11,12 +11,13 @@ var cmdInfoTable = {
   prev: seekPrev,
   'status': showStatus,
   stream: stream,
+  importurl: importUrl,
 };
 
 main(process.argv[0] + " " + process.argv[1], process.argv.slice(2));
 
 function usage(arg0) {
-  console.error("Usage: " + arg0 + " command [args]");
+  console.error("Usage: " + arg0 + " [options] command [args]");
   console.error("Options With Defaults:");
   console.error("  --server http://127.0.0.1:16242/");
   console.error("Commands:");
@@ -245,6 +246,21 @@ function stream(arg0, flags, args) {
     });
     request.end();
   }
+}
+
+function importUrl(arg0, flags, args) {
+  if (args.length !== 1) return usage(arg0);
+  var theUrl = args[0];
+
+  var gbr = createClient(flags);
+  gbr.on('connect', function() {
+    gbr.sendMessage("importUrl", {
+      url: theUrl,
+      autoQueue: true,
+    });
+    gbr.close();
+  });
+  gbr.connect();
 }
 
 function compareSortKeyThenId(a, b) {

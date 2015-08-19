@@ -9,7 +9,7 @@ the [Groove Basin Protocol Specification](https://github.com/andrewrk/groovebasi
 ## Command Line Interface
 
 ```
-Usage: gbremote command [args]
+Usage: gbremote [options] command [args]
 Options With Defaults:
   --server http://127.0.0.1:16242/
 Commands:
@@ -22,6 +22,7 @@ Commands:
   prev
   status
   stream
+  importurl
 ```
 
 ## Module Synopsis
